@@ -66,8 +66,8 @@ int main() {
 
 	// Connect to server
 	// Uncomment the code below after [Tests]
-	//Client client("18.196.4.216", 2000);
-	//client.Run(onMessageReceived);
+	// Client client("52.165.239.104", 2000);
+	// client.Run(onMessageReceived);
 
 	cin.get();
 	return 0;
