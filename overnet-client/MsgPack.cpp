@@ -10,8 +10,10 @@ MsgPack<T>::MsgPack(int msgType, int msgSize) {
     // and it's type
     pre_pack(messageSize);
     pre_pack(messageType);
-
-    //printf("\n[MsgPack] Initialized new message instance with type %d.\nYou want put %d bytes.\nThe fullSize will be %d bytes.\n\n", msgType, msgSize, messageSize);
+	printf("[MsgPack] New message with %d bytes.\n", msgSize);
+#ifdef DEBUG
+	printf("\n[MsgPack] Initialized new message instance with type %d.\nYou want put %d bytes.\nThe fullSize will be %d bytes.\n\n", msgType, msgSize, messageSize);
+#endif // DEBUG
 }
 
 template <class T>
@@ -26,7 +28,9 @@ MsgPack<T>::MsgPack(char* buffer) {
 
 template <class T>
 MsgPack<T>::~MsgPack() {
-    //printf("\n[MsgPack] Instance is being deleted.\n\n");
+#ifdef DEBUG
+	printf("\n[MsgPack] Instance is being deleted.\n\n");
+#endif // DEBUG
 }
 
 template <class T>
@@ -45,7 +49,10 @@ void MsgPack<T>::pack(PACK packet, int size) {
     // Copy new packet to buffer
     memcpy(getPack() + offsetBytes, packet, size);
     offsetBytes += size;
-    //printf("Copying data to buffer: offset is %d bytes.\n", offsetBytes);
+    
+#ifdef DEBUG
+	printf("Copying data to buffer: offset is %d bytes.\n", offsetBytes);
+#endif // DEBUG
 }
 
 template <class T>

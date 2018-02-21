@@ -9,6 +9,8 @@
 #include <cstdio>
 #include <cstring>
 
+enum MessageTypes { MESSAGE, TEST_BLOCK, RESULT };
+
 template <class T>
 class MsgPack {
 public:

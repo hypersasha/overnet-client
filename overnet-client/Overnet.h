@@ -9,6 +9,4 @@
 #include "MsgPack.h"
 #include "MsgPack.cpp"
 
-enum MessageTypes {MESSAGE, TEST_BLOCK};
-
 #endif //UNIXSERVER_OVERNET_H

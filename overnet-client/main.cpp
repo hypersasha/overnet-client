@@ -7,10 +7,12 @@
 
 using namespace std;
 
+int blockFile = 0;
+Client client("52.165.239.104", 2000);
+
 void onMessageReceived(char* buffer)
 {
 	MsgPack<int> message(buffer);
-	printf("Received message type is [%d].\n", message.type());
 
 	// If this is a text message
 	if (message.type() == MESSAGE) {
@@ -23,35 +25,58 @@ void onMessageReceived(char* buffer)
 
 	// If this is a TEST BLOCK message
 	if (message.type() == TEST_BLOCK) {
-		int block_id = 0;
-		int block_id_row = 0;
-		int n = 0;
-		int m = 0;
-		int i, j;
 
-		message.unpack(&block_id, sizeof(block_id));
-		message.unpack(&block_id_row, sizeof(block_id_row));
-		message.unpack(&n, sizeof(n));
-		message.unpack(&m, sizeof(m));
+		int i = 0, j = 0, rows = 0, cols = 0, blockId = 0, blockIdRow = 0, dimension = 0;
 
-		int *block = new int[n * m];
-		message.unpack(block, sizeof(int) * n * m);
+		// Unpack all parameters
+		message.unpack(&rows, sizeof(rows));
+		message.unpack(&cols, sizeof(cols));
+		message.unpack(&blockId, sizeof(blockId));
+		message.unpack(&blockIdRow, sizeof(blockIdRow));
+		message.unpack(&dimension, sizeof(dimension));
 
-		// Output block to file
-		ofstream fout;
-		fout.open("out.txt");
-		for (i = 0; i < n; ++i) {
-			for (j = 0; j < m; ++j) {
-				fout << *(block + i * m + j) << " ";
+		int *first_block = new int[rows * cols];
+		message.unpack(first_block, sizeof(int) * rows * cols);
+
+		int *second_block = new int[rows * cols];
+		message.unpack(second_block, sizeof(int) * rows * cols);
+
+		printf("[OVERNET] New block received (%d x %d), calculating...\n", rows, cols);
+
+		// Print sum of blocks
+		/*for (i = 0; i < rows; ++i) {
+			for (j = 0; j < cols; ++j) {
+				*(second_block + i * cols + j) = *(first_block + i * cols + j) + *(second_block + i * cols + j);
+				cout << *(second_block + i * cols + j) << '\t';
 			}
-			fout << endl;
-		}
-		fout.close();
+			cout << endl;
+		}*/
+
+		// Send response
+		int packetSize = sizeof(rows) + sizeof(cols) + sizeof(blockId) + sizeof(blockIdRow) + sizeof(dimension);
+		packetSize += sizeof(int) * rows * cols;
+
+		MsgPack<const void *> resp(RESULT, packetSize);
+
+		// Pack parameters
+		resp.pack(&rows, sizeof(rows));
+		resp.pack(&cols, sizeof(cols));
+		resp.pack(&blockId, sizeof(blockId));
+		resp.pack(&blockIdRow, sizeof(blockIdRow));
+		resp.pack(&dimension, sizeof(dimension));
+
+		// Pack result block
+		resp.pack((const void *)second_block, sizeof(int) * rows * cols);
+
+		//resp.pack(&response, sizeof(response));
+		client.Send(resp.getPack(), resp.size());
+
+		delete[] first_block;
+		delete[] second_block;
 	}
 }
 
 int main() {
-
 	// Before connect to the server
 	// Do some [Tests]
 	
@@ -66,7 +91,6 @@ int main() {
 
 	// Connect to server
 	// Uncomment the code below after [Tests]
-	// Client client("52.165.239.104", 2000);
 	// client.Run(onMessageReceived);
 
 	cin.get();
