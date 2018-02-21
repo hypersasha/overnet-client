@@ -41,16 +41,17 @@ void onMessageReceived(char* buffer)
 		int *second_block = new int[rows * cols];
 		message.unpack(second_block, sizeof(int) * rows * cols);
 
-		printf("[OVERNET] New block received (%d x %d), calculating...\n", rows, cols);
-
+#ifdef DEBUG
 		// Print sum of blocks
-		/*for (i = 0; i < rows; ++i) {
+		printf("[OVERNET] New block received (%d x %d), calculating...\n", rows, cols);
+		for (i = 0; i < rows; ++i) {
 			for (j = 0; j < cols; ++j) {
 				*(second_block + i * cols + j) = *(first_block + i * cols + j) + *(second_block + i * cols + j);
 				cout << *(second_block + i * cols + j) << '\t';
 			}
 			cout << endl;
-		}*/
+		}
+#endif // DEBUG
 
 		// Send response
 		int packetSize = sizeof(rows) + sizeof(cols) + sizeof(blockId) + sizeof(blockIdRow) + sizeof(dimension);
@@ -80,18 +81,18 @@ int main() {
 	// Before connect to the server
 	// Do some [Tests]
 	
-	MsgPackTest tester;
+	/*MsgPackTest tester;
 	tester.Integer_13_13Returned();
 	tester.Double_1337_1337Returned();
 	tester.Char_CharReturned();
 	tester.Array2x4_Array2x4Returned();
 	tester.Array3x2DobuleInt();
 	tester.Array4x2_Array4x2Returned();
-	tester.End();
+	tester.End();*/
 
 	// Connect to server
 	// Uncomment the code below after [Tests]
-	// client.Run(onMessageReceived);
+	 client.Run(onMessageReceived);
 
 	cin.get();
 	return 0;

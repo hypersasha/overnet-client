@@ -81,7 +81,7 @@ void Client::Run( void (*onMessageReceivedHandler)(char *) ) {
 	while (true)
 	{
 		ReceivedBytes = recv(socket_client, buffer, MAX_BUFFER, 0);
-		printf("[OVERNET] Received %d bytes.\n", ReceivedBytes);
+		//printf("[OVERNET] Received %d bytes.\n", ReceivedBytes);
 
 		// If we received some data
 		if (ReceivedBytes > 0)
@@ -91,7 +91,7 @@ void Client::Run( void (*onMessageReceivedHandler)(char *) ) {
 			{
 				// Extract the full size of message
 				memcpy(&messageSize, buffer, sizeof(messageSize));
-				printf("[OVERNET] Full message size is %d bytes.\n", messageSize);
+				//printf("[OVERNET] Full message size is %d bytes.\n", messageSize);
 
 				// Init buffer for packed message
 				msgBuffer = new char[messageSize];
@@ -108,12 +108,13 @@ void Client::Run( void (*onMessageReceivedHandler)(char *) ) {
 			
 			// Update Left to download size.
 			messageSize -= ReceivedBytes;
-			printf("[OVERNET] Left to receive %d bytes.\n", messageSize);
+			//printf("[OVERNET] Left to receive %d bytes.\n", messageSize);
 			memset(buffer, 0, MAX_BUFFER);
 
 			if (messageSize == 0)
 			{
 				onMessageReceivedHandler(msgBuffer);
+				delete[] msgBuffer;
 				messageSize = -1;
 				bytesOffset = 0;
 			}

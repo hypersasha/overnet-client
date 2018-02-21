@@ -10,8 +10,8 @@ MsgPack<T>::MsgPack(int msgType, int msgSize) {
     // and it's type
     pre_pack(messageSize);
     pre_pack(messageType);
-	printf("[MsgPack] New message with %d bytes.\n", msgSize);
 #ifdef DEBUG
+	printf("[MsgPack] New message with %d bytes.\n", msgSize);
 	printf("\n[MsgPack] Initialized new message instance with type %d.\nYou want put %d bytes.\nThe fullSize will be %d bytes.\n\n", msgType, msgSize, messageSize);
 #endif // DEBUG
 }
@@ -28,6 +28,7 @@ MsgPack<T>::MsgPack(char* buffer) {
 
 template <class T>
 MsgPack<T>::~MsgPack() {
+	delete[] buffer;
 #ifdef DEBUG
 	printf("\n[MsgPack] Instance is being deleted.\n\n");
 #endif // DEBUG
